@@ -2195,6 +2195,29 @@ ws.addEventListener('touchmove', e => {
    VIDEO PLAYBACK — PRODUCTION QUALITY
 ═══════════════════════════════════════════════ */
 
+/* ── Strip non-encoded multi-res sources — only the original .mp4 exists right now ── */
+document.querySelectorAll('.reel-video').forEach(v => {
+  const srcs = [...v.querySelectorAll('source')];
+  if (srcs.length > 1) {
+    srcs.slice(0, -1).forEach(s => s.remove());
+    v.load();
+  }
+});
+
+/* ── Click-to-fullscreen on real video cards (idx 0 & 1) ── */
+document.querySelectorAll('.reel-wrap[data-idx="0"], .reel-wrap[data-idx="1"]').forEach(wrap => {
+  const v = wrap.querySelector('.reel-video');
+  if (!v) return;
+  wrap.style.cursor = 'pointer';
+  wrap.addEventListener('click', () => {
+    v.muted = false;
+    v.currentTime = 0;
+    const fs = v.requestFullscreen || v.webkitRequestFullscreen || v.mozRequestFullScreen;
+    if (fs) fs.call(v);
+    v.play().catch(() => {});
+  });
+});
+
 /* ── Slow-connection detection ── */
 if (navigator.connection && /(2g|slow-2g|3g)/.test(navigator.connection.effectiveType)) {
   document.documentElement.classList.add('slow-connection');
