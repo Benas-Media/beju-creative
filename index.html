@@ -387,12 +387,12 @@ nav.scrolled {
    HERO
 ============================================================ */
 .hero {
-  min-height: 100vh;
+  min-height: 90vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: calc(80px + 4vh) 2rem 4rem;
+  padding: calc(80px + 4vh) 2rem 2rem;
   text-align: center;
   position: relative;
   overflow: hidden;
@@ -669,7 +669,7 @@ nav.scrolled {
    WORK / REEL SHOWCASE
 ============================================================ */
 .work-section {
-  padding: 7rem 0;
+  padding: 3.5rem 0 5rem;
   overflow: hidden;
 }
 .work-head {
@@ -702,12 +702,12 @@ nav.scrolled {
   padding: 0;
   user-select: none;
 }
-.work-track { position: relative; height: 510px; display: flex; align-items: center; justify-content: center; perspective: 1200px; }
+.work-track { position: relative; height: 660px; display: flex; align-items: center; justify-content: center; perspective: 1400px; }
 
-.reel-wrap { position: absolute; width: 240px; display: flex; flex-direction: column; gap: 12px; cursor: pointer; transition: transform .55s cubic-bezier(.22,1,.36,1), filter .55s cubic-bezier(.22,1,.36,1), opacity .55s cubic-bezier(.22,1,.36,1); will-change: transform, filter, opacity; }
+.reel-wrap { position: absolute; width: 300px; display: flex; flex-direction: column; gap: 12px; cursor: pointer; transition: transform .55s cubic-bezier(.22,1,.36,1), filter .55s cubic-bezier(.22,1,.36,1), opacity .55s cubic-bezier(.22,1,.36,1); will-change: transform, filter, opacity; }
 .reel-card {
-  width: 240px;
-  height: 427px;
+  width: 300px;
+  height: 534px;
   background: linear-gradient(160deg, #181818 0%, #111 100%);
   border-radius: 22px;
   border: 1px solid var(--border);
@@ -1347,7 +1347,7 @@ footer {
   .g-badges { grid-template-columns: 1fr; }
   .services-section, .testimonials-section,
   .about-section, .process-section { padding: 5rem 1.2rem; }
-  .work-track { height: 480px; }
+  .work-track { height: 580px; }
   .carousel-arrow { width: 40px; height: 40px; }
   .carousel-arrow-prev { left: .5rem; }
   .carousel-arrow-next { right: .5rem; }
@@ -1426,70 +1426,6 @@ footer {
   <div class="scroll-cue">
     <span class="scroll-cue-text">Scroll</span>
     <div class="scroll-cue-arrow"></div>
-  </div>
-</section>
-
-<!-- ============================================================
-     MARQUEE TICKER
-============================================================ -->
-<div class="marquee-band">
-  <div class="marquee-track">
-    <div class="marquee-seg">
-      <span>Reels</span><span class="mdot">✦</span><span class="lm">TikTok</span><span class="mdot">✦</span>
-      <span>YouTube Shorts</span><span class="mdot">✦</span><span class="lm">Brand Content</span><span class="mdot">✦</span>
-      <span>Hooks</span><span class="mdot">✦</span><span class="lm">Retention Editing</span><span class="mdot">✦</span>
-      <span>Growth Focused</span><span class="mdot">✦</span><span class="lm">Fast Turnaround</span><span class="mdot">✦</span>
-    </div>
-    <div class="marquee-seg" aria-hidden="true">
-      <span>Reels</span><span class="mdot">✦</span><span class="lm">TikTok</span><span class="mdot">✦</span>
-      <span>YouTube Shorts</span><span class="mdot">✦</span><span class="lm">Brand Content</span><span class="mdot">✦</span>
-      <span>Hooks</span><span class="mdot">✦</span><span class="lm">Retention Editing</span><span class="mdot">✦</span>
-      <span>Growth Focused</span><span class="mdot">✦</span><span class="lm">Fast Turnaround</span><span class="mdot">✦</span>
-    </div>
-  </div>
-</div>
-
-<!-- ============================================================
-     CLIENT LOGO STRIP
-============================================================ -->
-<section class="logos-section">
-  <p class="logos-label">Trusted By</p>
-  <div class="logos-outer">
-    <div class="logos-track">
-      <div class="logo-chip">Brand 01</div><div class="logo-chip">Brand 02</div>
-      <div class="logo-chip">Brand 03</div><div class="logo-chip">Brand 04</div>
-      <div class="logo-chip">Brand 05</div><div class="logo-chip">Brand 06</div>
-      <div class="logo-chip">Brand 07</div><div class="logo-chip">Brand 08</div>
-      <!-- duplicate for seamless loop -->
-      <div class="logo-chip">Brand 01</div><div class="logo-chip">Brand 02</div>
-      <div class="logo-chip">Brand 03</div><div class="logo-chip">Brand 04</div>
-      <div class="logo-chip">Brand 05</div><div class="logo-chip">Brand 06</div>
-      <div class="logo-chip">Brand 07</div><div class="logo-chip">Brand 08</div>
-    </div>
-  </div>
-</section>
-
-<!-- ============================================================
-     STATS BAR
-============================================================ -->
-<section class="stats-section" id="stats">
-  <div class="stats-grid">
-    <div class="stat-item reveal">
-      <span class="stat-num" data-target="120" data-suffix="+">0</span>
-      <span class="stat-lbl">Videos Delivered</span>
-    </div>
-    <div class="stat-item reveal d1">
-      <span class="stat-num" data-target="2" data-suffix="M+">0</span>
-      <span class="stat-lbl">Views Generated</span>
-    </div>
-    <div class="stat-item reveal d2">
-      <span class="stat-num" data-target="48" data-suffix="hr">0</span>
-      <span class="stat-lbl">Avg. Turnaround</span>
-    </div>
-    <div class="stat-item reveal d3">
-      <span class="stat-num" data-target="97" data-suffix="%">0</span>
-      <span class="stat-lbl">Client Retention</span>
-    </div>
   </div>
 </section>
 
@@ -1739,6 +1675,70 @@ footer {
     </button>
   </div>
   <div class="carousel-dots" id="carouselDots"></div>
+</section>
+
+<!-- ============================================================
+     MARQUEE TICKER
+============================================================ -->
+<div class="marquee-band">
+  <div class="marquee-track">
+    <div class="marquee-seg">
+      <span>Reels</span><span class="mdot">✦</span><span class="lm">TikTok</span><span class="mdot">✦</span>
+      <span>YouTube Shorts</span><span class="mdot">✦</span><span class="lm">Brand Content</span><span class="mdot">✦</span>
+      <span>Hooks</span><span class="mdot">✦</span><span class="lm">Retention Editing</span><span class="mdot">✦</span>
+      <span>Growth Focused</span><span class="mdot">✦</span><span class="lm">Fast Turnaround</span><span class="mdot">✦</span>
+    </div>
+    <div class="marquee-seg" aria-hidden="true">
+      <span>Reels</span><span class="mdot">✦</span><span class="lm">TikTok</span><span class="mdot">✦</span>
+      <span>YouTube Shorts</span><span class="mdot">✦</span><span class="lm">Brand Content</span><span class="mdot">✦</span>
+      <span>Hooks</span><span class="mdot">✦</span><span class="lm">Retention Editing</span><span class="mdot">✦</span>
+      <span>Growth Focused</span><span class="mdot">✦</span><span class="lm">Fast Turnaround</span><span class="mdot">✦</span>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     CLIENT LOGO STRIP
+============================================================ -->
+<section class="logos-section">
+  <p class="logos-label">Trusted By</p>
+  <div class="logos-outer">
+    <div class="logos-track">
+      <div class="logo-chip">Brand 01</div><div class="logo-chip">Brand 02</div>
+      <div class="logo-chip">Brand 03</div><div class="logo-chip">Brand 04</div>
+      <div class="logo-chip">Brand 05</div><div class="logo-chip">Brand 06</div>
+      <div class="logo-chip">Brand 07</div><div class="logo-chip">Brand 08</div>
+      <!-- duplicate for seamless loop -->
+      <div class="logo-chip">Brand 01</div><div class="logo-chip">Brand 02</div>
+      <div class="logo-chip">Brand 03</div><div class="logo-chip">Brand 04</div>
+      <div class="logo-chip">Brand 05</div><div class="logo-chip">Brand 06</div>
+      <div class="logo-chip">Brand 07</div><div class="logo-chip">Brand 08</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     STATS BAR
+============================================================ -->
+<section class="stats-section" id="stats">
+  <div class="stats-grid">
+    <div class="stat-item reveal">
+      <span class="stat-num" data-target="120" data-suffix="+">0</span>
+      <span class="stat-lbl">Videos Delivered</span>
+    </div>
+    <div class="stat-item reveal d1">
+      <span class="stat-num" data-target="2" data-suffix="M+">0</span>
+      <span class="stat-lbl">Views Generated</span>
+    </div>
+    <div class="stat-item reveal d2">
+      <span class="stat-num" data-target="48" data-suffix="hr">0</span>
+      <span class="stat-lbl">Avg. Turnaround</span>
+    </div>
+    <div class="stat-item reveal d3">
+      <span class="stat-num" data-target="97" data-suffix="%">0</span>
+      <span class="stat-lbl">Client Retention</span>
+    </div>
+  </div>
 </section>
 
 <!-- ============================================================
@@ -2195,9 +2195,9 @@ let carIdx = Math.floor((workCards.length - 1) / 2);
 
 function getOffsets() {
   const w = window.innerWidth;
-  return w < 480 ? { o1: 160, o2: 270, r1: 8  } :
-         w < 768 ? { o1: 205, o2: 340, r1: 10 } :
-                   { o1: 252, o2: 415, r1: 13  };
+  return w < 480 ? { o1: 195, o2: 325, r1: 8  } :
+         w < 768 ? { o1: 250, o2: 415, r1: 10 } :
+                   { o1: 315, o2: 515, r1: 13  };
 }
 
 function positionCards() {
