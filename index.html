@@ -7,23 +7,30 @@
 <meta name="description" content="Short-form video editing for personal brands, coaches, course creators, and DTC brands. Reels, TikToks, YouTube Shorts that convert.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<noscript><link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"></noscript>
 <style>
 
 /* ============================================================
    RESET & BASE
 ============================================================ */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; overflow-x: hidden; overscroll-behavior-x: none; }
+html { overflow-x: hidden; overscroll-behavior-x: none; touch-action: manipulation; }
+@media (prefers-reduced-motion: no-preference) {
+  html { scroll-behavior: smooth; }
+}
 body {
   font-family: 'Inter', system-ui, sans-serif;
-  background: linear-gradient(180deg, #0c0c0c 0%, #0a0a0a 50%, #0b0b0b 100%) fixed;
+  /* No fixed attachment — fixed background gradients force full repaints on scroll (mobile jank) */
+  background: linear-gradient(180deg, #0c0c0c 0%, #0a0a0a 50%, #0b0b0b 100%);
   color: var(--text);
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   touch-action: manipulation;
 }
+/* Kill double-tap zoom delay on everything tappable */
+a, button, input, textarea, .reel-card { touch-action: manipulation; }
 
 /* ============================================================
    CSS VARIABLES
@@ -63,25 +70,25 @@ body::after {
 /* ============================================================
    AMBIENT LIGHT SPOTS (fixed, behind all content)
 ============================================================ */
+/* Soft glow baked into a radial-gradient — same look as a 200px filter blur
+   without the per-frame GPU blur cost on mobile */
 .ambient-tl,
 .ambient-br {
   position: fixed;
   border-radius: 50%;
-  background: var(--accent);
   pointer-events: none;
   z-index: 0;
+  transform: translateZ(0);
 }
 .ambient-tl {
-  width: 700px; height: 700px;
-  top: -200px; left: -200px;
-  opacity: 0.04;
-  filter: blur(200px);
+  width: 1100px; height: 1100px;
+  top: -400px; left: -400px;
+  background: radial-gradient(circle, rgba(200,241,53,0.05) 0%, rgba(200,241,53,0.02) 40%, transparent 68%);
 }
 .ambient-br {
-  width: 600px; height: 600px;
-  bottom: -150px; right: -150px;
-  opacity: 0.03;
-  filter: blur(220px);
+  width: 1000px; height: 1000px;
+  bottom: -350px; right: -350px;
+  background: radial-gradient(circle, rgba(200,241,53,0.04) 0%, rgba(200,241,53,0.015) 40%, transparent 68%);
 }
 
 /* All content above ambient spots */
@@ -92,13 +99,14 @@ nav, section, div.marquee-band, footer { position: relative; z-index: 1; }
 ============================================================ */
 .cursor {
   position: fixed;
+  top: 0; left: 0;
   width: 10px;
   height: 10px;
   background: var(--accent);
   border-radius: 50%;
   pointer-events: none;
   z-index: 99999;
-  transform: translate(-50%, -50%);
+  transform: translate3d(-50%, -50%, 0);
   will-change: transform;
   transition: width 0.25s var(--ease), height 0.25s var(--ease), opacity 0.25s var(--ease);
   mix-blend-mode: difference;
@@ -175,22 +183,32 @@ em { font-style: italic; color: var(--accent); }
 /* ============================================================
    SCROLL REVEAL — BLUR-RISE EFFECT
 ============================================================ */
+/* Base reveal: transform + opacity only (compositor-friendly on mobile).
+   will-change is released by JS once the element has revealed. */
 .reveal {
   opacity: 0;
-  transform: translateY(30px);
-  filter: blur(12px);
-  transition:
-    opacity  0.9s var(--ease-reveal),
-    transform 0.9s var(--ease-reveal),
-    filter   0.9s var(--ease-reveal);
-  will-change: transform, opacity, filter;
-  backface-visibility: hidden;
   transform: translateY(30px) translateZ(0);
+  transition:
+    opacity  0.8s var(--ease-reveal),
+    transform 0.8s var(--ease-reveal);
+  will-change: transform, opacity;
+  backface-visibility: hidden;
 }
 .reveal.in {
   opacity: 1;
   transform: translateY(0) translateZ(0);
-  filter: blur(0);
+}
+/* Blur-rise VFX only on hover-capable (desktop-class) devices that allow motion —
+   phones get the lighter transform/opacity version above */
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .reveal {
+    filter: blur(9px);
+    transition:
+      opacity  0.9s var(--ease-reveal),
+      transform 0.9s var(--ease-reveal),
+      filter   0.9s var(--ease-reveal);
+  }
+  .reveal.in { filter: blur(0); }
 }
 .d1 { transition-delay: 0.1s; }
 .d2 { transition-delay: 0.2s; }
@@ -228,7 +246,12 @@ em { font-style: italic; color: var(--accent); }
   transform: translateY(-2px) translateZ(0);
   box-shadow: 0 10px 30px rgba(200, 241, 53, 0.24);
 }
-.btn-primary.lg { font-size: 13px; padding: 18px 38px; }
+.btn-primary.lg {
+  font-size: 13px;
+  padding: 18px 38px;
+  box-shadow: 0 8px 32px rgba(200, 241, 53, 0.22);
+}
+.btn-primary.lg:hover { box-shadow: 0 12px 44px rgba(200, 241, 53, 0.32); }
 
 .btn-ghost {
   display: inline-flex;
@@ -467,8 +490,29 @@ nav.scrolled {
 .hero-reply {
   opacity: 0;
   animation: fadeUp 0.8s var(--ease-reveal) 0.48s forwards;
-  margin-bottom: 2rem;
+  margin-bottom: 1.1rem;
 }
+
+/* Guarantee teaser — surfaces the existing offer above the fold */
+.hero-guarantee {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Syne', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  font-style: italic;
+  letter-spacing: 0.01em;
+  color: var(--accent);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(200,241,53,0.35);
+  padding-bottom: 2px;
+  margin-bottom: 2rem;
+  opacity: 0;
+  animation: fadeUp 0.8s var(--ease-reveal) 0.52s forwards;
+  transition: border-color 0.3s var(--ease);
+}
+.hero-guarantee:hover { border-color: var(--accent); }
 
 .hero-pills {
   display: flex;
@@ -705,7 +749,10 @@ nav.scrolled {
 }
 .work-track { position: relative; height: 660px; display: flex; align-items: center; justify-content: center; perspective: 1400px; touch-action: pan-y; }
 
-.reel-wrap { position: absolute; width: 300px; display: flex; flex-direction: column; gap: 12px; cursor: pointer; transition: transform .55s cubic-bezier(.22,1,.36,1), filter .44s cubic-bezier(.22,1,.36,1), opacity .44s cubic-bezier(.22,1,.36,1); will-change: transform, opacity; }
+.reel-wrap { position: absolute; width: 300px; display: flex; flex-direction: column; gap: 12px; cursor: pointer; transition: transform .55s cubic-bezier(.22,1,.36,1), opacity .44s cubic-bezier(.22,1,.36,1); will-change: transform, opacity; }
+/* Dim side cards via an opacity overlay instead of animating filter:brightness —
+   animated filters repaint every frame and jank on mobile GPUs */
+.reel-wrap::after { content: ""; position: absolute; inset: 0; background: #0a0a0a; border-radius: 22px; opacity: var(--dim, 0); transition: opacity .44s cubic-bezier(.22,1,.36,1); pointer-events: none; z-index: 15; }
 .reel-card {
   width: 300px;
   height: 534px;
@@ -809,6 +856,13 @@ nav.scrolled {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+  /* Lighter fallback: content is simply visible — no rise, no blur, no wait */
+  .reveal {
+    opacity: 1;
+    transform: none;
+    filter: none;
+    will-change: auto;
   }
 }
 
@@ -1257,6 +1311,64 @@ nav.scrolled {
 .social-row span { color: var(--text-dim); font-size: 10px; }
 
 /* ============================================================
+   STICKY MOBILE CTA (nav CTA is hidden < 768px — this replaces it)
+============================================================ */
+.sticky-cta {
+  display: none;
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  z-index: 950;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
+  background: rgba(10, 10, 10, 0.94);
+  border-top: 1px solid var(--border);
+  transform: translate3d(0, 110%, 0);
+  transition: transform 0.35s var(--ease);
+  will-change: transform;
+}
+.sticky-cta.show { transform: translate3d(0, 0, 0); }
+.sticky-cta-text {
+  font-family: 'Syne', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  font-style: italic;
+  color: var(--text);
+  line-height: 1.3;
+}
+.sticky-cta-text em { color: var(--accent); }
+.sticky-cta .btn-primary { padding: 12px 20px; font-size: 11px; flex-shrink: 0; }
+
+/* ============================================================
+   POST-VIEW PROMPT
+============================================================ */
+.view-prompt {
+  position: fixed;
+  left: 50%; bottom: 1.6rem;
+  transform: translate(-50%, 16px);
+  z-index: 951;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: rgba(14, 14, 14, 0.97);
+  color: var(--text);
+  border: 1px solid var(--border-accent);
+  border-radius: 16px;
+  padding: 12px 14px 12px 20px;
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s var(--ease-reveal), transform 0.4s var(--ease-reveal);
+  max-width: calc(100vw - 2rem);
+}
+.view-prompt.show { opacity: 1; transform: translate(-50%, 0); pointer-events: auto; }
+.view-prompt-text { font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 600; font-style: italic; white-space: nowrap; }
+.view-prompt .btn-primary { padding: 11px 18px; font-size: 10px; flex-shrink: 0; }
+.view-prompt-close { width: 28px; height: 28px; border-radius: 50%; border: none; background: transparent; color: var(--text-muted); cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.view-prompt-close:hover { color: var(--text); }
+
+/* ============================================================
    FOOTER
 ============================================================ */
 footer {
@@ -1328,6 +1440,7 @@ footer {
 @media (max-width: 768px) {
   .nav-links, .nav-cta { display: none; }
   .hamburger { display: flex; }
+  .sticky-cta { display: flex; }
   .mobile-overlay { display: flex; }
   .process-steps { grid-template-columns: 1fr; gap: 2.5rem; }
   .process-line-track { display: none; }
@@ -1418,6 +1531,8 @@ footer {
     <span class="reply-note"><span class="reply-dot"></span>Replies within 24 hours</span>
   </div>
 
+  <a href="#guarantee" class="hero-guarantee">Double your views, or you don't pay →</a>
+
   <div class="hero-pills">
     <span class="pill"><span class="pill-star">✦</span> 2M+ Views Delivered</span>
     <span class="pill"><span class="pill-star">✦</span> 48hr Turnaround</span>
@@ -1498,13 +1613,8 @@ footer {
             playsinline muted loop
             preload="metadata"
             disablepictureinpicture disableremoteplayback x-webkit-airplay="deny"
-            poster="videos/posters/personal-brand-1-beju-poster.webp"
             aria-label="Personal Brand Story preview video"
           >
-            <source src="videos/personal-brand-1-beju-1440p.mp4" type='video/mp4; codecs="avc1.640032"' media="(min-width: 1440px)">
-            <source src="videos/personal-brand-1-beju-1080p.mp4" type='video/mp4; codecs="avc1.640028"' media="(min-width: 768px)">
-            <source src="videos/personal-brand-1-beju-720p.mp4"  type='video/mp4; codecs="avc1.640028"'>
-            <source src="videos/personal-brand-1-beju.webm"       type='video/webm; codecs="vp9"'>
             <source src="Personal brand1 beju.mp4"                type="video/mp4">
           </video>
           <span class="reel-badge">Personal Brand</span>
@@ -1521,13 +1631,8 @@ footer {
             playsinline muted loop
             preload="metadata"
             disablepictureinpicture disableremoteplayback x-webkit-airplay="deny"
-            poster="videos/posters/personal-brand-2-beju-poster.webp"
             aria-label="Personal Brand Reel preview video"
           >
-            <source src="videos/personal-brand-2-beju-1440p.mp4" type='video/mp4; codecs="avc1.640032"' media="(min-width: 1440px)">
-            <source src="videos/personal-brand-2-beju-1080p.mp4" type='video/mp4; codecs="avc1.640028"' media="(min-width: 768px)">
-            <source src="videos/personal-brand-2-beju-720p.mp4"  type='video/mp4; codecs="avc1.640028"'>
-            <source src="videos/personal-brand-2-beju.webm"       type='video/webm; codecs="vp9"'>
             <source src="Personal brand2 beju.mp4"                type="video/mp4">
           </video>
           <span class="reel-badge">Personal Brand</span>
@@ -2019,33 +2124,70 @@ footer {
   </div>
 </footer>
 
+<!-- Sticky mobile CTA — existing offer + existing microcopy, shown after the hero -->
+<div class="sticky-cta" id="stickyCta" aria-hidden="true">
+  <span class="sticky-cta-text">Double your views,<br><em>or you don't pay.</em></span>
+  <a href="mailto:bejusipe@gmail.com?subject=Portfolio%20Inquiry" class="btn-primary">Get In Touch →</a>
+</div>
+
+<!-- Post-view prompt — one gentle nudge after watching a couple of videos -->
+<div class="view-prompt" id="viewPrompt" aria-hidden="true" role="dialog" aria-label="Contact prompt">
+  <span class="view-prompt-text">Like what you see? <em>Let's talk.</em></span>
+  <a href="mailto:bejusipe@gmail.com?subject=Portfolio%20Inquiry" class="btn-primary" id="viewPromptBtn">Get In Touch</a>
+  <button class="view-prompt-close" id="viewPromptClose" aria-label="Dismiss">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M18 6L6 18M6 6l12 12"/></svg>
+  </button>
+</div>
+
 <!-- ============================================================
      JAVASCRIPT
 ============================================================ -->
 <script>
-/* ── Custom cursor ── */
+/* ── Custom cursor (transform + rAF — never touches layout) ── */
 const cur = document.getElementById('cursor');
+let curX = 0, curY = 0, curTicking = false;
 document.addEventListener('mousemove', e => {
-  cur.style.left = e.clientX + 'px';
-  cur.style.top  = e.clientY + 'px';
+  curX = e.clientX; curY = e.clientY;
+  if (!curTicking) {
+    requestAnimationFrame(() => {
+      cur.style.transform = 'translate3d(' + curX + 'px,' + curY + 'px,0) translate(-50%,-50%)';
+      curTicking = false;
+    });
+    curTicking = true;
+  }
 }, { passive: true });
 document.querySelectorAll('a,button,.reel-card,.svc-card,.tcard,.team-card').forEach(el => {
   el.addEventListener('mouseenter', () => cur.classList.add('big'));
   el.addEventListener('mouseleave', () => cur.classList.remove('big'));
 });
 
-/* ── Nav shrink on scroll (rAF-throttled) ── */
+/* ── Nav shrink + sticky mobile CTA (one rAF-throttled scroll handler) ── */
 const navEl = document.getElementById('nav');
+const stickyCta = document.getElementById('stickyCta');
+let contactVisible = false;
 let navTicking = false;
 window.addEventListener('scroll', () => {
   if (!navTicking) {
     requestAnimationFrame(() => {
       navEl.classList.toggle('scrolled', window.scrollY > 60);
+      const show = window.scrollY > window.innerHeight * 0.8 && !contactVisible;
+      stickyCta.classList.toggle('show', show);
+      stickyCta.setAttribute('aria-hidden', String(!show));
       navTicking = false;
     });
     navTicking = true;
   }
 }, { passive: true });
+
+/* Hide sticky CTA while the final contact CTA is on screen (no double CTA) */
+const contactObs = new IntersectionObserver((entries) => {
+  contactVisible = entries[0].isIntersecting;
+  if (contactVisible) {
+    stickyCta.classList.remove('show');
+    stickyCta.setAttribute('aria-hidden', 'true');
+  }
+}, { threshold: 0.1 });
+contactObs.observe(document.getElementById('contact'));
 
 /* ── Mobile menu ── */
 const ham = document.getElementById('hamburger');
@@ -2062,8 +2204,8 @@ const revObs = new IntersectionObserver((entries) => {
     if (e.isIntersecting) {
       e.target.classList.add('in');
       revObs.unobserve(e.target);
-      /* release GPU hint after animation completes */
-      setTimeout(() => { e.target.style.willChange = 'auto'; }, 1000);
+      /* release GPU hint after animation completes (0.9s + up to 0.6s stagger delay) */
+      setTimeout(() => { e.target.style.willChange = 'auto'; }, 1600);
     }
   });
 }, { threshold: 0.15 });
@@ -2101,34 +2243,17 @@ if (pLine) {
   pObs.observe(document.getElementById('process'));
 }
 
-/* ── Work track: drag-to-scroll + arrow buttons ── */
-const ws = document.getElementById('workScroll');
-let isDragging = false, dragStartX = 0, dragScrollLeft = 0;
-ws.addEventListener('mousedown', e => {
-  isDragging = true;
-  dragStartX = e.pageX - ws.offsetLeft;
-  dragScrollLeft = ws.scrollLeft;
-  ws.style.cursor = 'grabbing';
-});
-ws.addEventListener('mouseleave', () => { isDragging = false; ws.style.cursor = 'grab'; });
-ws.addEventListener('mouseup',    () => { isDragging = false; ws.style.cursor = 'grab'; });
-ws.addEventListener('mousemove',  e => {
-  if (!isDragging) return;
-  e.preventDefault();
-  ws.scrollLeft = dragScrollLeft - (e.pageX - ws.offsetLeft - dragStartX) * 1.25;
-});
-document.getElementById('wPrev').addEventListener('click', () => ws.scrollBy({ left: -280, behavior: 'smooth' }));
-document.getElementById('wNext').addEventListener('click', () => ws.scrollBy({ left:  280, behavior: 'smooth' }));
+/* ── Legacy scroll-rail drag handlers removed — the 3D carousel positions cards
+   with transforms (work-scroll is overflow:hidden, so scrollLeft was a no-op
+   that still burned CPU on every touchmove) ── */
 
-/* ── Touch drag for work track ── */
-let touchStartX = 0, touchScrollLeft = 0;
-ws.addEventListener('touchstart', e => {
-  touchStartX = e.touches[0].pageX;
-  touchScrollLeft = ws.scrollLeft;
-}, { passive: true });
-ws.addEventListener('touchmove', e => {
-  ws.scrollLeft = touchScrollLeft - (e.touches[0].pageX - touchStartX);
-}, { passive: true });
+/* ── Pause marquee ticker while off-screen ── */
+const tickerObs = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    e.target.style.animationPlayState = e.isIntersecting ? 'running' : 'paused';
+  });
+});
+document.querySelectorAll('.marquee-track, .logos-track').forEach(t => tickerObs.observe(t));
 
 /* ═══════════════════════════════════════════════
    VIDEO PLAYBACK — PRODUCTION QUALITY
@@ -2199,8 +2324,8 @@ function positionCards() {
       if (v) { v.pause(); v.currentTime = 0; }
     }
     const ry = off === 0 ? 0 : off > 0 ? -r1 : r1;
-    wrap.style.transform     = `translateX(${tx}px) scale(${sc}) rotateY(${ry}deg)`;
-    wrap.style.filter        = `brightness(${br})`;
+    wrap.style.transform     = `translate3d(${tx}px,0,0) scale(${sc}) rotateY(${ry}deg)`;
+    wrap.style.setProperty('--dim', (1 - br).toFixed(2));
     wrap.style.opacity       = op;
     wrap.style.zIndex        = zi;
     wrap.style.pointerEvents = abs <= 2 ? 'auto' : 'none';
@@ -2210,12 +2335,12 @@ function positionCards() {
 }
 
 let navLocked = false;
-function carNav(dir) {
+function carNav(dir, steps = 1) {
   if (navLocked) return;
   navLocked = true;
   setTimeout(() => { navLocked = false; }, 450);
   workCards.forEach(w => { const v = w.querySelector('.reel-video'); if (v && !v.paused) v.pause(); });
-  carIdx = (carIdx + dir + workCards.length) % workCards.length;
+  carIdx = ((carIdx + dir * steps) % workCards.length + workCards.length) % workCards.length;
   positionCards();
 }
 
@@ -2254,17 +2379,21 @@ document.getElementById('carNext').addEventListener('click', () => carNav(1));
 document.getElementById('wPrev').addEventListener('click',  () => carNav(-1));
 document.getElementById('wNext').addEventListener('click',  () => carNav(1));
 
-/* ── Touch swipe ── */
+/* ── Touch swipe — velocity-aware: a fast or long fling jumps 2 cards in one motion ── */
 const workTrack = document.querySelector('.work-track');
-let tsX = 0;
-workTrack.addEventListener('touchstart', e => { tsX = e.touches[0].clientX; }, { passive: true });
+let tsX = 0, tsT = 0;
+workTrack.addEventListener('touchstart', e => { tsX = e.touches[0].clientX; tsT = performance.now(); }, { passive: true });
 workTrack.addEventListener('touchend',   e => {
   const dx = e.changedTouches[0].clientX - tsX;
-  if (Math.abs(dx) > 50) carNav(dx > 0 ? -1 : 1);
+  if (Math.abs(dx) <= 50) return;
+  const vel   = Math.abs(dx) / Math.max(1, performance.now() - tsT); // px per ms
+  const steps = (vel > 0.65 || Math.abs(dx) > 170) ? 2 : 1;
+  carNav(dx > 0 ? -1 : 1, steps);
 }, { passive: true });
 
-/* ── Keyboard ── */
+/* ── Keyboard (skipped while a video is fullscreen so arrows can seek) ── */
 document.addEventListener('keydown', e => {
+  if (document.fullscreenElement || document.webkitFullscreenElement) return;
   if (e.key === 'ArrowLeft')  { e.preventDefault(); carNav(-1); }
   if (e.key === 'ArrowRight') { e.preventDefault(); carNav(1); }
 });
@@ -2282,6 +2411,8 @@ workCards.forEach((wrap, i) => {
     if (i === carIdx) {
       const v = wrap.querySelector('.reel-video');
       if (!v) return;
+      watched.add(i);
+      hidePrompt();
       v.muted = false;
       const fs = v.requestFullscreen || v.webkitRequestFullscreen || v.mozRequestFullScreen;
       if (fs) fs.call(v);
@@ -2308,9 +2439,31 @@ document.addEventListener('visibilitychange', () => {
         if (i !== carIdx) { v.pause(); v.currentTime = 0; }
         else v.play().catch(() => {});
       });
+      maybeShowPrompt();
     }
   });
 });
+
+/* ── Post-viewing prompt: one gentle nudge after 2 videos watched fullscreen.
+   Desktop only — mobile already has the sticky CTA bar. ── */
+const viewPrompt = document.getElementById('viewPrompt');
+const watched = new Set();
+let promptShown = false, promptTimer = 0;
+function maybeShowPrompt() {
+  if (promptShown || watched.size < 2) return;
+  if (window.innerWidth < 769) return;
+  promptShown = true;
+  viewPrompt.classList.add('show');
+  viewPrompt.setAttribute('aria-hidden', 'false');
+  promptTimer = setTimeout(hidePrompt, 14000);
+}
+function hidePrompt() {
+  clearTimeout(promptTimer);
+  viewPrompt.classList.remove('show');
+  viewPrompt.setAttribute('aria-hidden', 'true');
+}
+document.getElementById('viewPromptClose').addEventListener('click', hidePrompt);
+document.getElementById('viewPromptBtn').addEventListener('click', hidePrompt);
 
 /* ── Initial layout ── */
 positionCards();
