@@ -1166,7 +1166,20 @@ nav.scrolled {
   max-width: 620px; margin: 2.2rem auto 0;
   font-size: 13px; color: var(--text-dim); line-height: 1.6; font-style: italic;
 }
-@media (max-width: 860px) { .pricing-grid { grid-template-columns: repeat(2, 1fr); } }
+.pricing-group-label {
+  font-family: 'Syne', sans-serif; font-weight: 700; font-size: 18px;
+  color: var(--text); text-align: center; letter-spacing: 0.02em;
+  margin: 2.6rem auto 0;
+}
+.pricing-group-label .lf-note {
+  display: block; font-family: 'Inter', sans-serif; font-weight: 400;
+  font-size: 12px; color: var(--text-muted); margin-top: 4px; letter-spacing: 0;
+}
+.pricing-group-label + .pricing-grid { margin-top: 1.1rem; }
+.pricing-grid.three { grid-template-columns: repeat(3, 1fr); max-width: 830px; }
+@media (max-width: 860px) {
+  .pricing-grid, .pricing-grid.three { grid-template-columns: repeat(2, 1fr); }
+}
 @media (max-width: 560px) { .pricing-grid { grid-template-columns: 1fr; } .pricing-section { padding: 5rem 1.2rem; } }
 
 /* ============================================================
@@ -1992,6 +2005,7 @@ footer {
     <div class="eyebrow center">Pricing</div>
     <h2 class="section-title center">Simple, volume-based <em>pricing.</em></h2>
   </div>
+  <div class="pricing-group-label reveal">Short-form</div>
   <div class="pricing-grid">
     <div class="price-card reveal d1">
       <div class="price-qty">1 video</div>
@@ -2013,6 +2027,25 @@ footer {
       <div class="price-qty">10 videos</div>
       <div class="price-amount">$85</div>
       <div class="price-per">$8.50 / edit</div>
+    </div>
+  </div>
+
+  <div class="pricing-group-label reveal">Long-form <span class="lf-note">Priced per finished video</span></div>
+  <div class="pricing-grid three">
+    <div class="price-card reveal d1">
+      <div class="price-qty">1 video</div>
+      <div class="price-amount">$50</div>
+      <div class="price-per">single edit</div>
+    </div>
+    <div class="price-card reveal d2">
+      <div class="price-qty">3 videos</div>
+      <div class="price-amount">$120</div>
+      <div class="price-per">$40 / edit</div>
+    </div>
+    <div class="price-card reveal d3">
+      <div class="price-qty">5 videos</div>
+      <div class="price-amount">$170</div>
+      <div class="price-per">$34 / edit</div>
     </div>
   </div>
   <p class="pricing-note reveal d2">Prices aren't fixed — they can vary depending on the average length of the videos you want edited. These are average prices for 15–40 second reels.</p>
@@ -2106,14 +2139,14 @@ footer {
 
     <div class="team-grid-5" style="margin-top:2.5rem;">
       <div class="team-card reveal d1">
-        <div class="t-avatar">E</div>
-        <div class="t-name">Elena Vasil</div>
+        <div class="t-avatar">B</div>
+        <div class="t-name">Benas</div>
         <div class="t-role">Editor</div>
         <div class="t-quote">"I love finding the moment in your footage that makes people stop scrolling. Send me your raw clips and let's see what story is already in there."</div>
       </div>
       <div class="team-card reveal d2">
-        <div class="t-avatar">M</div>
-        <div class="t-name">Marcus Ryen</div>
+        <div class="t-avatar">S</div>
+        <div class="t-name">Simas</div>
         <div class="t-role">Editor</div>
         <div class="t-quote">"There's something satisfying about turning a messy timeline into something that just flows. If you've got footage sitting around, I'd love to take a look."</div>
       </div>
